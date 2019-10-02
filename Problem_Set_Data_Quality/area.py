@@ -48,7 +48,6 @@ def process_file(filename):
             if "areaLand" in line:
                 line["areaLand"] = fix_area(line["areaLand"])
             data.append(line)
-        print(data)
     return data
 
 
