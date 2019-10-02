@@ -51,12 +51,12 @@ def audit_file(filename, fields):
         reader = csv.DictReader(f)
         skip_lines(reader, 3)
 
-        fieldtypes = {field: () for field in fields}
+        fieldtypes = {field: set() for field in fields}
 
         for row in reader:
             for field in fields:
                 if check_type(row[field]) not in fieldtypes[field]:
-                    fieldtypes[field] += (check_type(row[field]),)
+                    fieldtypes[field].add(check_type(row[field]))
 
     return fieldtypes
 
