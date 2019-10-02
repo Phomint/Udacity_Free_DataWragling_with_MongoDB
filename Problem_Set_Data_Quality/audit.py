@@ -40,45 +40,57 @@ FIELDS = ["name", "timeZone_label", "utcOffset", "homepage", "governmentType_lab
           "maximumElevation", "minimumElevation", "populationDensity",
           "wgs84_pos#lat", "wgs84_pos#long", "areaLand", "areaMetro", "areaUrban"]
 
+def skip_lines(filename, skip):
+    for i in range(0, skip):
+        next(filename)
 
 def audit_file(filename, fields):
     fieldtypes = {}
 
     with open(filename, "r") as f:
         reader = csv.DictReader(f)
+        skip_lines(reader, 3)
 
-        dicts = {}
+        fieldtypes = {field: () for field in fields}
+
         for row in reader:
-            if 'dbpedia.org' in row['URI']:
-                dict1 = {field: row[field] for field in fields}
-        #for field in fields:
-        #    check_type(dict1, fieldtypes, field)
-
-                print(dict1)
+            for field in fields:
+                if check_type(row[field]) not in fieldtypes[field]:
+                    fieldtypes[field] += (check_type(row[field]),)
 
     return fieldtypes
 
 
-def check_type(lista, dicts, key):
-    sets = []
-    for item in lista[key]:
-        if (item == 'NULL' or item == '') and type(None) not in sets:
-            print('None :{}'.format(item))
-            sets.append(type(None))
-        elif '{' in item and type([]) not in sets:
-            print('List :{}'.format(item))
-            sets.append(type([]))
-        elif item.isdigit() and type(1) not in sets:
-            if item.isdecimal() and type(1.1) not in sets:
-                print('Float :{}'.format(item))
-                sets.append(type(1.1))
-            else:
-                print('Int :{}'.format(item))
-                sets.append(type(1))
-        elif item.isalpha() and type(str()) not in sets:
-            print('String :{}'.format(item))
-            sets.append(type(str()))
-    dicts[key] = tuple(sets)
+def check_type(item):
+
+    if (item == 'NULL' or item == ''):
+        return type(None)
+    elif '{' in item and type([]):
+        return type([])
+    elif isfloat(item):
+        if isint(item):
+            return type(1)
+        else:
+            return type(1.1)
+    else:
+        return type(str())
+
+def isfloat(x):
+    try:
+        a = float(x)
+    except ValueError:
+        return False
+    else:
+        return True
+
+
+def isint(x):
+    try:
+        a = int(x)
+    except ValueError:
+        return False
+    else:
+        return True
 
 
 def test():
