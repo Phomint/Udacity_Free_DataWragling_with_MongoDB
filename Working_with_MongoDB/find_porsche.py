@@ -11,7 +11,7 @@ you have to install MongoDB and download and insert the dataset.
 
 def porsche_query():
     # Please fill in the query to find all autos manuafactured by Porsche.
-    query = {'manufactured': 'Porsche'}
+    query = {"manufacturer" : "Porsche"}
     return query
 
 
