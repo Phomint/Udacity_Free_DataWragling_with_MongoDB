@@ -23,8 +23,9 @@ def get_city(db):
 
 def get_db():
     # For local use
+    from credentials import Credential as keys
     from pymongo import MongoClient
-    client = MongoClient('localhost:27017')
+    client = MongoClient(keys.LOCALHOST)
     # 'examples' here is the database name. It will be created if it does not exist.
     db = client.examples
     return db
